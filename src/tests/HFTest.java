@@ -89,6 +89,7 @@ class HFTest extends TestDriver {
 
       try {
         rid = f.insertRecord(rec.toByteArray());
+        //System.out.println("HFTest-line92: " + i);
       } catch (Exception e) {
         status = FAIL;
         System.err.println("*** Error inserting record " + i + "\n");
@@ -99,6 +100,8 @@ class HFTest extends TestDriver {
           && Minibase.BufferManager.getNumUnpinned() != Minibase.BufferManager
               .getNumFrames()) {
 
+    	  System.out.println("NumUnpinned: "+ Minibase.BufferManager.getNumUnpinned()
+    			  + " NumFrames: " + Minibase.BufferManager.getNumFrames());
         System.err.println("*** Insertion left a page pinned\n");
         status = FAIL;
       }
@@ -136,6 +139,8 @@ class HFTest extends TestDriver {
             .getNumFrames()-1) {
       System.err
           .println("*** The heap-file scan has not pinned the first page\n");
+      System.out.println("NumUnpinned: " + Minibase.BufferManager.getNumUnpinned() +
+    		  "NumFrames: " + (Minibase.BufferManager.getNumFrames()-1));
       status = FAIL;
     }
 
@@ -338,7 +343,7 @@ class HFTest extends TestDriver {
       }
 
       if ((rec.ival != i) || (rec.fval != (float) i * 2.5)) {
-        System.err.println("*** Record " + i
+        System.err.println("*** test2: Record " + i
           + " differs from what we inserted\n");
         System.err.println("rec.ival: " + rec.ival + " should be " + i
             + "\n");
@@ -500,7 +505,7 @@ class HFTest extends TestDriver {
         if ((rec.ival != i) || (rec.fval != (float) i * 7)
             || (rec2.ival != i) || (rec2.fval != i * 7)) {
           System.err
-              .println("*** Record " + i + " differs from our update\n");
+              .println("*** test 3-1: Record " + i + " differs from our update\n");
           System.err.println("rec.ival: " + rec.ival + " should be " + i
               + "\n");
           System.err.println("rec.fval: " + rec.fval + " should be "

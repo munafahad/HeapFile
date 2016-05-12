@@ -83,6 +83,10 @@ class HFPage extends Page {
 
   } // protected void initDefaults()
 
+  
+  public static int getSlotSize() {
+	  return SLOT_SIZE;
+  }
   /**
    * Gets the number of slots on the page.
    */

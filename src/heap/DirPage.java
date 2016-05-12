@@ -42,6 +42,11 @@ class DirPage extends HFPage {
     setEntryCnt((short) 0);
   }
 
+  
+  public short getMaxEntries() {
+	    return getShortValue(MAX_ENTRIES);
+	  }
+  
   /**
    * Gets the number of directory entries on the page.
    */
