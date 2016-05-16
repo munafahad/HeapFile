@@ -79,9 +79,7 @@ public class HeapFile implements GlobalConst {
 	  } else {
 		  throw new IllegalArgumentException("FILE NAME CANNOT BE NULL!");
 	  }
-	 //Minibase.BufferManager.unpinPage(headId, UNPIN_CLEAN);
-	  
-	  //throw new UnsupportedOperationException("Not implemented");
+
 
 	  }// public HeapFile(String name)
 
@@ -95,8 +93,6 @@ public class HeapFile implements GlobalConst {
 	  if(isTemp){
 		  deleteFile();
 	  }
-	    //throw new UnsupportedOperationException("Not implemented");
-
   } // protected void finalize() throws Throwable
 
   /**
@@ -134,9 +130,7 @@ public class HeapFile implements GlobalConst {
       //2. delete the file from the library
       if(!isTemp)
           Minibase.DiskManager.delete_file_entry(fileName);
-      
-	  //throw new UnsupportedOperationException("Not implemented");
-
+     
   } // public void deleteFile()
 
   /**
@@ -152,7 +146,6 @@ public class HeapFile implements GlobalConst {
    */
   public RID insertRecord(byte[] record) {
 
-	  //System.out.println("in insertRecord");
 	  
 	  if(record.length > MAX_TUPSIZE) {
           throw new IllegalArgumentException("the record is too large to fit on one data page");
@@ -169,28 +162,19 @@ public class HeapFile implements GlobalConst {
           RID rid = dataPage.insertRecord(record); 
           //dataPage.print();
           
-          //4. update file/page directory
+          //3. update file/page directory
           short freeSpace = dataPage.getFreeSpace();
-         
-          //System.out.println(record);
           updateDirEntry(pageId, 1, freeSpace); //1 as we need to add a new record
           
-          
-          
-          //Minibase.BufferManager.unpinPage(pageId, UNPIN_DIRTY);
-          //3. unpin the used pages "dir page" and "data page"
+          //4. unpin the used pages "dir page" and "data page"
           Minibase.BufferManager.unpinPage(pageId, UNPIN_DIRTY);
           //Minibase.BufferManager.unpinPage(dataPage.getNextPage(), UNPIN_CLEAN);
           //Minibase.BufferManager.unpinPage(dataPage.getPrevPage(), UNPIN_CLEAN);
-         // Minibase.BufferManager.unpinPage(rid.pageno,UNPIN_CLEAN);
-          
-          //System.out.println(pageId.pid + "*******insertRecord- RID " + rid );
+          // Minibase.BufferManager.unpinPage(rid.pageno,UNPIN_CLEAN);
           return rid; 
           
-          ////
       }
 	
-	 //throw new UnsupportedOperationException("Not implemented");
    } // public RID insertRecord(byte[] record)
 
   /**
@@ -200,8 +184,6 @@ public class HeapFile implements GlobalConst {
    */
   public byte[] selectRecord(RID rid) {
 
-	  //System.out.println("in selectRecord");
-	  
 	  byte [] rec;
 	  DataPage page = new DataPage();
 	  
@@ -217,8 +199,6 @@ public class HeapFile implements GlobalConst {
       Minibase.BufferManager.unpinPage(rid.pageno, UNPIN_CLEAN);
       return rec;
      
-	  //throw new UnsupportedOperationException("Not implemented");
-
   } // public byte[] selectRecord(RID rid)
 
   /**
@@ -228,8 +208,6 @@ public class HeapFile implements GlobalConst {
    */
   public void updateRecord(RID rid, byte[] newRecord) {
 
-	  //System.out.println("in updateRecord");
-	  
 	  DataPage dataPage = new DataPage();
       Minibase.BufferManager.pinPage(rid.pageno, dataPage, PIN_NOOP);
       
@@ -241,8 +219,6 @@ public class HeapFile implements GlobalConst {
           throw exc;
       }
       
-	 //throw new UnsupportedOperationException("Not implemented");
-
   } // public void updateRecord(RID rid, byte[] newRecord)
 
   /**
@@ -253,8 +229,6 @@ public class HeapFile implements GlobalConst {
    */
   public void deleteRecord(RID rid) {
 
-	  //System.out.println("in deleteRecord");
-	  
 	  DataPage dataPage = new DataPage();
 	  
       Minibase.BufferManager.pinPage(rid.pageno, dataPage, PIN_NOOP);
@@ -274,9 +248,7 @@ public class HeapFile implements GlobalConst {
       }
       
       //Minibase.BufferManager.unpinPage(rid.pageno, UNPIN_DIRTY);
-      
-	// throw new UnsupportedOperationException("Not implemented");
-
+     
   } // public void deleteRecord(RID rid)
 
   /**
@@ -314,16 +286,12 @@ public class HeapFile implements GlobalConst {
      
       return recCount;
   
-      
-	 // throw new UnsupportedOperationException("Not implemented");
-
   } // public int getRecCnt()
 
   /**
    * Initiates a sequential scan of the heap file.
    */
   public HeapScan openScan() {
-	  //System.out.println("in openScan");
     return new HeapScan(this);
   }
 
@@ -352,7 +320,6 @@ public class HeapFile implements GlobalConst {
       {
           Minibase.BufferManager.pinPage(dirId, dirPage, PIN_NOOP);
           
-          
           int count = dirPage.getEntryCnt();
           for(int i = 0; i < count; i++)
           {
@@ -374,10 +341,6 @@ public class HeapFile implements GlobalConst {
           freeId = insertPage();
       return freeId;
 
-      
-      
-	  //  throw new UnsupportedOperationException("Not implemented");
-
   } // protected PageId getAvailPage(int reclen)
 
   /**
@@ -392,13 +355,10 @@ public class HeapFile implements GlobalConst {
    */
   protected int findDirEntry(PageId pageno, PageId dirId, DirPage dirPage) {
 
-	  //System.out.println("in findDirEntry");
-	  
 	  //int entry = -1;
 	  PageId nextId;
 	
 	  //int loop_times = 0 ;
-	  
 	  
 	  //1. check one page directory at a time  
 	  for(dirId.pid = headId.pid ; dirId.pid != INVALID_PAGEID ; dirId.pid = nextId.pid){
@@ -412,7 +372,6 @@ public class HeapFile implements GlobalConst {
 	          
 	          //3. check if there is a pointer to a dataPage
 	          for(int i = 0; i < count ; i++){
-	        	  //System.out.print(i);
 	              if(pageno.pid == dirPage.getPageId(i).pid) {
 	            	  //System.out.println(dirPage.getPageId(i).pid);
 	            	  //Minibase.BufferManager.unpinPage(dirId, UNPIN_CLEAN);
@@ -428,8 +387,7 @@ public class HeapFile implements GlobalConst {
 	  
        return -1;  
  
-	 //throw new UnsupportedOperationException("Not implemented");
-
+	
   } // protected int findEntry(PageId pageno, PageId dirId, DirPage dirPage)
 
   /**
@@ -442,14 +400,12 @@ public class HeapFile implements GlobalConst {
    */
   protected void updateDirEntry(PageId pageno, int deltaRec, int freecnt) {
 	  
-	  //System.out.println("in updateDirEntry");
-	 
 	  PageId dirId = new PageId(); //output parameter 
       DirPage dirPage = new DirPage();
       
       int index = findDirEntry(pageno, dirId, dirPage);
       
-     //Minibase.BufferManager.pinPage(dirId, dirPage,PIN_NOOP);
+      //Minibase.BufferManager.pinPage(dirId, dirPage,PIN_NOOP);
       
       //check if the page is empty 
       int recCount = dirPage.getRecCnt(index) + deltaRec;
@@ -465,9 +421,7 @@ public class HeapFile implements GlobalConst {
           
           Minibase.BufferManager.unpinPage(dirId, UNPIN_DIRTY);
       }
-	  //throw new UnsupportedOperationException("Not implemented");
-  
-
+	  
   } // protected void updateEntry(PageId pageno, int deltaRec, int deltaFree)
 
   /**
@@ -478,10 +432,6 @@ public class HeapFile implements GlobalConst {
    * @return id of the new data page
    */
   protected PageId insertPage() {
-
-
-	  //System.out.println("in insertPage");
-	  
 	  
 	  //PART 1: to manage the dirPage
 	  int count = 0;
@@ -555,11 +505,8 @@ public class HeapFile implements GlobalConst {
       Minibase.BufferManager.unpinPage(dataId, UNPIN_DIRTY);
       Minibase.BufferManager.unpinPage(dirId, UNPIN_DIRTY);
       
-      //System.out.println("insertPage#dataId: " + dataId);
       return dataId;
       
-	 //throw new UnsupportedOperationException("Not implemented");
-
   } // protected PageId insertPage()
 
   /**
@@ -574,9 +521,6 @@ public class HeapFile implements GlobalConst {
   protected void deletePage(PageId pageno, PageId dirId, DirPage dirPage,
       int index) {
 
-	  //System.out.println("in deletePage");
-	  
-	  
 	  //1. free and unpin the page
 	  Minibase.BufferManager.freePage(pageno);
 	  Minibase.BufferManager.unpinPage(pageno, UNPIN_CLEAN);
@@ -621,8 +565,6 @@ public class HeapFile implements GlobalConst {
           Minibase.BufferManager.unpinPage(dirId, UNPIN_DIRTY);
       }
       
-	  // throw new UnsupportedOperationException("Not implemented");
-
   } // protected void deletePage(PageId, PageId, DirPage, int)
 
 } // public class HeapFile implements GlobalConst
