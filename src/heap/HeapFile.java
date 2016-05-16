@@ -108,7 +108,7 @@ public class HeapFile implements GlobalConst {
       
       while(dirId.pid != INVALID_PAGEID) {
     	  
-          Minibase.BufferManager.pinPage(dirId, dirPage, PIN_NOOP);
+          Minibase.BufferManager.pinPage(dirId, dirPage, PIN_DISKIO);
           
           //1. free data pages
           int count = dirPage.getEntryCnt();
@@ -158,7 +158,7 @@ public class HeapFile implements GlobalConst {
     	  DataPage dataPage = new DataPage();
     	  
           //2. insert record to the "data page"
-          Minibase.BufferManager.pinPage(pageId, dataPage, PIN_NOOP);
+          Minibase.BufferManager.pinPage(pageId, dataPage, PIN_DISKIO);
           RID rid = dataPage.insertRecord(record); 
           //dataPage.print();
           
@@ -187,7 +187,7 @@ public class HeapFile implements GlobalConst {
 	  byte [] rec;
 	  DataPage page = new DataPage();
 	  
-      Minibase.BufferManager.pinPage(rid.pageno, page, PIN_NOOP);
+      Minibase.BufferManager.pinPage(rid.pageno, page, PIN_DISKIO);
       
       try {
           rec = page.selectRecord(rid);
@@ -209,7 +209,7 @@ public class HeapFile implements GlobalConst {
   public void updateRecord(RID rid, byte[] newRecord) {
 
 	  DataPage dataPage = new DataPage();
-      Minibase.BufferManager.pinPage(rid.pageno, dataPage, PIN_NOOP);
+      Minibase.BufferManager.pinPage(rid.pageno, dataPage, PIN_DISKIO);
       
       try {
     	  dataPage.updateRecord(rid, newRecord);
@@ -231,7 +231,7 @@ public class HeapFile implements GlobalConst {
 
 	  DataPage dataPage = new DataPage();
 	  
-      Minibase.BufferManager.pinPage(rid.pageno, dataPage, PIN_NOOP);
+      Minibase.BufferManager.pinPage(rid.pageno, dataPage, PIN_DISKIO);
       
       try {
     	  //1.delete from the dataPage
@@ -266,7 +266,7 @@ public class HeapFile implements GlobalConst {
       while(dirId.pid != INVALID_PAGEID)
       {
           
-    	  Minibase.BufferManager.pinPage(dirId, dirPage, PIN_NOOP);
+    	  Minibase.BufferManager.pinPage(dirId, dirPage, PIN_DISKIO);
     	  
     	  //count records in a single page
     	  //to get number of "directory entries" on the page
@@ -274,6 +274,7 @@ public class HeapFile implements GlobalConst {
     	  
           for(int i = 0 ; i < count; i++) {
         	  //to getRecordsCount at a given index
+        	  //System.out.println(recCount);
         	  recCount += dirPage.getRecCnt(i); 
           }
          
@@ -318,7 +319,7 @@ public class HeapFile implements GlobalConst {
       
       while(freeId == null && dirId.pid != INVALID_PAGEID)
       {
-          Minibase.BufferManager.pinPage(dirId, dirPage, PIN_NOOP);
+          Minibase.BufferManager.pinPage(dirId, dirPage, PIN_DISKIO);
           
           int count = dirPage.getEntryCnt();
           for(int i = 0; i < count; i++)
@@ -365,7 +366,7 @@ public class HeapFile implements GlobalConst {
 			
 		  
 		  		 //System.out.println(dirId.pid);
-			  Minibase.BufferManager.pinPage(dirId, dirPage, PIN_NOOP);
+			  Minibase.BufferManager.pinPage(dirId, dirPage, PIN_DISKIO);
 			   
 			  //2. get entry count in a dirPage
 	          int count = dirPage.getEntryCnt();
@@ -405,7 +406,7 @@ public class HeapFile implements GlobalConst {
       
       int index = findDirEntry(pageno, dirId, dirPage);
       
-      //Minibase.BufferManager.pinPage(dirId, dirPage,PIN_NOOP);
+      //Minibase.BufferManager.pinPage(dirId, dirPage,PIN_DISKIO);
       
       //check if the page is empty 
       int recCount = dirPage.getRecCnt(index) + deltaRec;
@@ -441,7 +442,7 @@ public class HeapFile implements GlobalConst {
       
       do
       {
-          Minibase.BufferManager.pinPage(dirId, dirPage, PIN_NOOP);
+          Minibase.BufferManager.pinPage(dirId, dirPage, PIN_DISKIO);
           
           count = dirPage.getEntryCnt();
           
@@ -541,7 +542,7 @@ public class HeapFile implements GlobalConst {
           
           //previous page
           if(prevId.pid != INVALID_PAGEID){
-              Minibase.BufferManager.pinPage(prevId, dPage, PIN_NOOP);
+              Minibase.BufferManager.pinPage(prevId, dPage, PIN_DISKIO);
               dPage.setNextPage(nextId);
               Minibase.BufferManager.unpinPage(prevId, UNPIN_DIRTY);
           }
@@ -549,7 +550,7 @@ public class HeapFile implements GlobalConst {
           
           //next page
           if(nextId.pid != INVALID_PAGEID){
-              Minibase.BufferManager.pinPage(nextId, dPage, PIN_NOOP);
+              Minibase.BufferManager.pinPage(nextId, dPage, PIN_DISKIO);
               dPage.setPrevPage(prevId);
               Minibase.BufferManager.unpinPage(nextId, UNPIN_DIRTY);
           }
